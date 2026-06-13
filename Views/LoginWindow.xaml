@@ -1,0 +1,52 @@
+<Window x:Class="ServiceDeskPro.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ServiceDesk Pro - Login" Height="520" Width="860" MinHeight="480" MinWidth="760" ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen" Background="{StaticResource AppBackground}">
+    <Grid Margin="28">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="{StaticResource SidebarBackground}" Padding="30">
+            <StackPanel VerticalAlignment="Center">
+                <!-- Shared brand header used across the system for a consistent professional identity. -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,28">
+                    <Border Width="52" Height="52" CornerRadius="10" Background="#333333" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1">
+                        <TextBlock Text="🎧" FontSize="27" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0,0,0">
+                        <TextBlock Text="ServiceDesk" FontSize="30" FontWeight="Bold"/>
+                        <TextBlock Text="Pro" FontSize="30" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Text="Manage tickets, technicians, SLA rules and IT reports from one clean dashboard." TextWrapping="Wrap" Foreground="{StaticResource MutedTextBrush}" FontSize="16" LineHeight="25"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1" Background="{StaticResource CardBackground}" Padding="42" Margin="24,0,0,0">
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Admin Login" FontSize="28" FontWeight="SemiBold"/>
+                <TextBlock Text="Enter your username and password to continue." Foreground="{StaticResource MutedTextBrush}" Margin="0,6,0,30"/>
+                <TextBlock Text="Username" Foreground="{StaticResource MutedTextBrush}"/>
+                <TextBox x:Name="UsernameBox" Margin="0,6,0,16"/>
+                <TextBlock Text="Password" Foreground="{StaticResource MutedTextBrush}"/>
+                <PasswordBox x:Name="PasswordBox" Margin="0,6,0,22" KeyDown="PasswordBox_KeyDown"/>
+                <TextBlock x:Name="MessageText" Foreground="#EF4444" Margin="0,0,0,14"/>
+                <Button Content="Login" Style="{StaticResource PrimaryButton}" Height="46" Click="Login_Click"/>
+
+                <Button Content="Forgot Password?"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="{StaticResource AccentBrush}"
+                        HorizontalAlignment="Center"
+                        Margin="0,16,0,0"
+                        Cursor="Hand"
+                        Click="ForgotPassword_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
