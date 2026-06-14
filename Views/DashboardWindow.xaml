@@ -1,0 +1,834 @@
+<Window x:Class="ServiceDeskPro.Views.DashboardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ServiceDesk Pro" Height="690" Width="1160" MinHeight="620" MinWidth="1000" ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen" Background="{StaticResource AppBackground}">
+    <Window.Resources>
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="14"/>
+        </Style>
+        <Style x:Key="SmallGridButton" TargetType="Button" BasedOn="{StaticResource SecondaryButton}">
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="2,0"/>
+        </Style>
+        <Style x:Key="TrimText" TargetType="TextBlock">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="StatusBadgeBorder" TargetType="Border">
+            <Setter Property="Background" Value="#22C55E"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="8,3"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding AvailabilityStatus}" Value="On Break">
+                    <Setter Property="Background" Value="#F59E0B"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding AvailabilityStatus}" Value="Offline">
+                    <Setter Property="Background" Value="#EF4444"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="{StaticResource SidebarBackground}" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="0,0,1,0">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Margin="16,20,16,0">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                        <Border Width="38" Height="38" CornerRadius="8" Background="#333333" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1">
+                            <TextBlock Text="🎧" FontSize="19" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
+                            <TextBlock Text="ServiceDesk" FontSize="18" FontWeight="Bold"/>
+                            <TextBlock Text="Pro" FontSize="18" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <TextBlock Text="GENERAL" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,8"/>
+                    <Button Content="⌂   Dashboard" Style="{StaticResource SidebarButton}" Click="ShowDashboard_Click"/>
+                    <Button Content="☰   Tickets" Style="{StaticResource SidebarButton}" Click="ShowTickets_Click"/>
+                    <Button Content="＋   Create Ticket" Style="{StaticResource SidebarButton}" Click="ShowCreateTicket_Click"/>
+                    <Button Content="👥   Technicians" Style="{StaticResource SidebarButton}" Click="ShowTechnicians_Click"/>
+
+                    <Border Height="1" Background="#2D2D2D" Margin="0,16"/>
+                    <TextBlock Text="REPORTS" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,8"/>
+                    <Button Content="▥   Analytics" Style="{StaticResource SidebarButton}" Click="ShowAnalytics_Click"/>
+                    <Button Content="▤   Reports" Style="{StaticResource SidebarButton}" Click="ShowReports_Click"/>
+
+                    <Border Height="1" Background="#2D2D2D" Margin="0,16"/>
+                    <TextBlock Text="SYSTEM" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,8"/>
+                    <Button Content="⚙   Settings" Style="{StaticResource SidebarButton}" Click="ShowSettings_Click"/>
+                    <Button Content="👤   Users" Style="{StaticResource SidebarButton}" Click="ShowUsers_Click"/>
+                </StackPanel>
+                <Button DockPanel.Dock="Bottom" Content="↪   Log Out" Style="{StaticResource SidebarButton}" Margin="12,0,12,16" Click="Logout_Click"/>
+            </DockPanel>
+        </Border>
+
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Background="{StaticResource AppBackground}">
+            <Grid Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock x:Name="GreetingText" Text="Hello, Admin 👋" FontSize="24" FontWeight="Bold"/>
+                        <TextBlock x:Name="CompanyText" Text="Welcome to ServiceDeskPro IT Support Dashboard." Foreground="{StaticResource MutedTextBrush}" Margin="0,6,0,0"/>
+                    </StackPanel>
+                    <Border Grid.Column="1"
+                            Background="{StaticResource CardBackground}"
+                            BorderBrush="{StaticResource BorderBrushSoft}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="16,10"
+                            MinWidth="190"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="🔔"
+                                       FontSize="22"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,14,0"/>
+                            <Border Background="{StaticResource AccentBrush}"
+                                    Width="34"
+                                    Height="34"
+                                    CornerRadius="17"
+                                    Margin="0,0,10,0"
+                                    VerticalAlignment="Center">
+                                <TextBlock x:Name="UserInitialText"
+                                           Text="A"
+                                           Foreground="White"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock x:Name="UserText"
+                                       VerticalAlignment="Center"
+                                       Foreground="White"
+                                       FontWeight="SemiBold"
+                                       TextTrimming="CharacterEllipsis"
+                                       MaxWidth="260"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Grid x:Name="DashboardPanel" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="280"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0" Margin="0,0,12,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <UniformGrid Grid.Row="0" Columns="4" Margin="0,0,0,12">
+                            <Border Style="{StaticResource Card}" Margin="0,0,8,0" MinHeight="108" Cursor="Hand" MouseLeftButtonUp="OpenTicketsCard_Click"><StackPanel><TextBlock Text="📄  Open Tickets" Foreground="{StaticResource MutedTextBrush}" FontSize="13"/><TextBlock x:Name="OpenCountText" Text="0" FontSize="28" FontWeight="Bold" Margin="0,8,0,0"/><TextBlock Text="View open" Foreground="{StaticResource AccentBrush}" FontSize="12"/></StackPanel></Border>
+                            <Border Style="{StaticResource Card}" Margin="0,0,8,0" MinHeight="108" Cursor="Hand" MouseLeftButtonUp="InProgressTicketsCard_Click"><StackPanel><TextBlock Text="⏳  In Progress" Foreground="{StaticResource MutedTextBrush}" FontSize="13"/><TextBlock x:Name="InProgressCountText" Text="0" FontSize="28" FontWeight="Bold" Margin="0,8,0,0"/><TextBlock Text="View progress" Foreground="{StaticResource AccentBrush}" FontSize="12"/></StackPanel></Border>
+                            <Border Style="{StaticResource Card}" Margin="0,0,8,0" MinHeight="108" Cursor="Hand" MouseLeftButtonUp="CriticalTicketsCard_Click"><StackPanel><TextBlock Text="🚨  Critical" Foreground="{StaticResource MutedTextBrush}" FontSize="13"/><TextBlock x:Name="CriticalCountText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#EF4444" Margin="0,8,0,0"/><TextBlock Text="View critical" Foreground="{StaticResource AccentBrush}" FontSize="12"/></StackPanel></Border>
+                            <Border Style="{StaticResource Card}" MinHeight="108" Cursor="Hand" MouseLeftButtonUp="ResolvedTicketsCard_Click"><StackPanel><TextBlock Text="✅  Resolved" Foreground="{StaticResource MutedTextBrush}" FontSize="13"/><TextBlock x:Name="ResolvedCountText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#22C55E" Margin="0,8,0,0"/><TextBlock Text="View resolved" Foreground="{StaticResource AccentBrush}" FontSize="12"/></StackPanel></Border>
+                        </UniformGrid>
+
+                        <Border Grid.Row="1" Style="{StaticResource Card}" VerticalAlignment="Stretch">
+                            <DockPanel>
+                                <Grid DockPanel.Dock="Top" Margin="0,0,0,12">
+                                    <TextBlock Text="Recent Tickets" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                </Grid>
+                                <DataGrid x:Name="RecentTicketsGrid" MouseDoubleClick="RecentTicketsGrid_MouseDoubleClick" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanUserResizeColumns="False">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Ticket No" Binding="{Binding TicketNumber}" Width="90" ElementStyle="{StaticResource TrimText}"/>
+                                        <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="135" ElementStyle="{StaticResource TrimText}"/>
+                                        <DataGridTextColumn Header="Priority" Binding="{Binding Priority}" Width="58" ElementStyle="{StaticResource TrimText}"/>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="72" ElementStyle="{StaticResource TrimText}"/>
+                                        <DataGridTextColumn Header="Assigned" Binding="{Binding AssignedToName}" Width="95" ElementStyle="{StaticResource TrimText}"/>
+                                        <DataGridTextColumn Header="SLA" Binding="{Binding SlaStatus}" Width="70" ElementStyle="{StaticResource TrimText}"/>
+                                        <DataGridTextColumn Header="Created" Binding="{Binding CreatedDate, StringFormat=d}" Width="70" ElementStyle="{StaticResource TrimText}"/>
+                                        <DataGridTemplateColumn Header="Action" Width="58">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate><Button Content="View" Style="{StaticResource SmallGridButton}" Click="ViewTicket_Click"/></DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </DockPanel>
+                        </Border>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" Style="{StaticResource Card}" Height="250" Margin="0,0,0,12">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Top" Text="Technician List" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                <ListBox x:Name="TechnicianListBox" Background="Transparent" BorderThickness="0" Foreground="White" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Padding="0,8" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="0,0,0,1">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions><ColumnDefinition Width="34"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                                    <Border Width="30" Height="30" CornerRadius="15" Background="{StaticResource AccentBrush}">
+                                                        <TextBlock Text="{Binding Initials}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                                        <TextBlock Text="{Binding FullName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="{Binding Department}" Foreground="{StaticResource MutedTextBrush}" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                                                        <Border Style="{StaticResource StatusBadgeBorder}" Margin="0,6,0,0" HorizontalAlignment="Left">
+                                                            <TextBlock Text="{Binding AvailabilityStatus}" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </DockPanel>
+                        </Border>
+                        <Border Grid.Row="1" Style="{StaticResource Card}" VerticalAlignment="Stretch">
+                            <StackPanel>
+                                <TextBlock Text="Today&apos;s Activity" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="60"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Tickets Created Today" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="ActivityCreatedTodayText" Text="0" FontWeight="Bold" HorizontalAlignment="Right" TextAlignment="Right" Foreground="#29C7D8"/>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Tickets Resolved Today" Foreground="{StaticResource MutedTextBrush}" Margin="0,6,0,0"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="ActivityResolvedTodayText" Text="0" FontWeight="Bold" Margin="10,6,0,0" HorizontalAlignment="Right" TextAlignment="Right" Foreground="#29C7D8"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Status Changes" Foreground="{StaticResource MutedTextBrush}" Margin="0,6,0,0"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="ActivityStatusChangesText" Text="0" FontWeight="Bold" Margin="10,6,0,0" HorizontalAlignment="Right" TextAlignment="Right" Foreground="#29C7D8"/>
+                                </Grid>
+
+                                <Border Height="1" Background="{StaticResource BorderBrushSoft}" Margin="0,0,0,10"/>
+
+                                <TextBlock Text="Latest Activity" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                <Border Background="#2D2D2D" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock x:Name="LastActivityTitleText" Text="No activity yet" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock x:Name="LastActivityMessageText" Text="Activities will appear when tickets, users, or technicians change." TextWrapping="Wrap" Foreground="{StaticResource MutedTextBrush}" FontSize="12" Margin="0,4,0,0"/>
+                                        <TextBlock x:Name="LastActivityTimeText" Text="" Foreground="{StaticResource MutedTextBrush}" FontSize="11" Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Button Content="View Full Activity Log" Style="{StaticResource PrimaryButton}" Height="42" Margin="0,6,0,0" Click="ViewFullActivityLog_Click"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <Grid x:Name="TicketsPanel" Grid.Row="1" Visibility="Collapsed">
+                    <Border Style="{StaticResource Card}">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,12">
+                                <TextBlock Text="Tickets Management" FontSize="20" FontWeight="SemiBold" Width="230"/>
+                                <TextBox x:Name="TicketSearchBox" Width="320" TextChanged="TicketSearchBox_TextChanged"/>
+                                <Button Content="Refresh" Style="{StaticResource SecondaryButton}" Margin="10,0,0,0" Click="Refresh_Click"/>
+                            </StackPanel>
+                            <DataGrid x:Name="TicketsGrid" MinHeight="420" MouseDoubleClick="TicketsGrid_MouseDoubleClick" HorizontalScrollBarVisibility="Disabled" CanUserResizeColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Ticket No" Binding="{Binding TicketNumber}" Width="105" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTextColumn Header="Dept" Binding="{Binding Department}" Width="90" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTextColumn Header="Priority" Binding="{Binding Priority}" Width="68" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTextColumn Header="Assigned To" Binding="{Binding AssignedToName}" Width="115" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTextColumn Header="SLA" Binding="{Binding SlaStatus}" Width="75" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTemplateColumn Header="Action" Width="58"><DataGridTemplateColumn.CellTemplate><DataTemplate><Button Content="View" Style="{StaticResource SmallGridButton}" Click="ViewTicket_Click"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+
+                <Grid x:Name="CreateTicketPanel" Grid.Row="1" Visibility="Collapsed">
+                    <!-- Create Ticket now uses the full workspace.
+                         The old guideline panel was removed because it wasted space and made the page look less realistic. -->
+                    <Border Style="{StaticResource Card}">
+                        <DockPanel LastChildFill="True">
+                            <StackPanel DockPanel.Dock="Bottom" Margin="0,14,0,0">
+                                <TextBlock x:Name="CreateTicketMessage" Foreground="#EF4444" Margin="0,0,0,8" TextWrapping="Wrap"/>
+                                <Button Content="Submit Ticket" Style="{StaticResource PrimaryButton}" Height="46" Click="SubmitTicket_Click"/>
+                            </StackPanel>
+
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel>
+                                    <TextBlock Text="Create New Ticket" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                    <TextBlock Text="Capture the issue details, choose the correct category, and assign an available technician." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,18"/>
+
+                                    <TextBlock Text="Title" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <TextBox x:Name="TicketTitleBox" Margin="0,6,0,14" Height="42"/>
+
+                                    <TextBlock Text="Description" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <TextBox x:Name="TicketDescriptionBox" Margin="0,6,0,16" Height="135" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+
+                                    <Grid Margin="0,0,0,14">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="18"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Category" Foreground="{StaticResource MutedTextBrush}"/>
+                                            <ComboBox x:Name="CategoryBox" Margin="0,6,0,0"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Department" Foreground="{StaticResource MutedTextBrush}"/>
+                                            <ComboBox x:Name="DepartmentBox" Margin="0,6,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="18"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Priority" Foreground="{StaticResource MutedTextBrush}"/>
+                                            <ComboBox x:Name="PriorityBox" Margin="0,6,0,0"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Assign Technician" Foreground="{StaticResource MutedTextBrush}"/>
+                                            <ComboBox x:Name="AssignTechBox" Margin="0,6,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+
+                <Grid x:Name="TechniciansPanel" Grid.Row="1" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="270"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left side: create a new technician account. New technicians are always Available. -->
+                    <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+                        <!-- The Add Technician form uses a DockPanel so the Add button is always visible.
+                             On smaller laptop screens the fields can scroll, but the final button stays fixed at the bottom. -->
+                        <DockPanel LastChildFill="True">
+                            <Button DockPanel.Dock="Bottom" Content="Add Technician" Style="{StaticResource PrimaryButton}" Height="42" Margin="0,10,0,0" Click="AddTechnician_Click"/>
+                            <TextBlock DockPanel.Dock="Bottom" x:Name="TechMessage" Foreground="#EF4444" Margin="0,8,0,0" TextWrapping="Wrap"/>
+
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel>
+                                    <TextBlock Text="Add Technician" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                                    <TextBlock Text="Full Name" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <TextBox x:Name="TechNameBox" Margin="0,4,0,8"/>
+
+                                    <TextBlock Text="Username" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <TextBox x:Name="TechUsernameBox" Margin="0,4,0,8"/>
+
+                                    <TextBlock Text="Email Address" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <TextBox x:Name="TechEmailBox" Margin="0,4,0,8"/>
+
+                                    <TextBlock Text="Phone Number" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <TextBox x:Name="TechPhoneBox" Margin="0,4,0,8"/>
+
+                                    <TextBlock Text="Department" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <ComboBox x:Name="TechDepartmentBox" Margin="0,4,0,8"/>
+
+                                    <TextBlock Text="Temporary Password" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <PasswordBox x:Name="TechPasswordBox" Margin="0,4,0,8"/>
+
+                                    <TextBlock Text="Status: Available by default" Foreground="#86EFAC" FontSize="12" Margin="0,2,0,8" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Right side: technician list and selected technician editor. -->
+                    <Border Grid.Column="1" Style="{StaticResource Card}">
+                        <DockPanel LastChildFill="True">
+                            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                                <TextBlock Text="Technician Management" FontSize="22" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TechnicianSummaryText"
+                                           Text="Technicians: 0 | Available: 0 | On Break: 0 | Offline: 0"
+                                           Foreground="{StaticResource MutedTextBrush}"
+                                           FontSize="13"
+                                           Margin="0,6,0,0"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <Border DockPanel.Dock="Top" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="1" CornerRadius="6" Margin="0,0,0,14" MaxHeight="260">
+                                <DataGrid x:Name="TechniciansGrid" SelectionChanged="TechniciansGrid_SelectionChanged" HorizontalScrollBarVisibility="Disabled" CanUserResizeColumns="False" MinHeight="220">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Name" Binding="{Binding DisplayName}" Width="2*" ElementStyle="{StaticResource TrimText}"/>
+                                        <DataGridTextColumn Header="Department" Binding="{Binding DisplayDepartment}" Width="1.4*" ElementStyle="{StaticResource TrimText}"/>
+                                        <DataGridTextColumn Header="Tickets" Binding="{Binding AssignedTickets}" Width="80"/>
+                                        <DataGridTemplateColumn Header="Status" Width="135">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Border Style="{StaticResource StatusBadgeBorder}" HorizontalAlignment="Left" Padding="10,4">
+                                                        <TextBlock Text="{Binding AvailabilityStatus}" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Actions" Width="100">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="Edit"
+                                                            Padding="12,5"
+                                                            Background="#2F2F2F"
+                                                            Foreground="White"
+                                                            BorderBrush="{StaticResource BorderBrushSoft}"
+                                                            Click="EditTechnician_Click"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+
+                            <Border Background="#2F2F2F" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="1" CornerRadius="8" Padding="14">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" Width="56" Height="56" CornerRadius="28" Background="{StaticResource AccentBrush}" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <TextBlock x:Name="SelectedTechInitialsText" Text="--" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" x:Name="ViewTechnicianProfile" Margin="0,0,20,0">
+                                        <TextBlock x:Name="SelectedTechNameText" Text="Choose a technician" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                        <TextBlock x:Name="SelectedTechRoleText" Text="Select a technician to view details and update status." Foreground="{StaticResource MutedTextBrush}" Margin="0,3,0,12" TextWrapping="Wrap"/>
+
+                                        <UniformGrid Columns="2" Margin="0,0,0,12">
+                                            <StackPanel Margin="0,0,12,8">
+                                                <TextBlock Text="Username" Foreground="{StaticResource MutedTextBrush}"/>
+                                                <TextBlock x:Name="SelectedTechUsernameText" Text="-" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,12,8">
+                                                <TextBlock Text="Email" Foreground="{StaticResource MutedTextBrush}"/>
+                                                <TextBlock x:Name="SelectedTechEmailText" Text="-" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,12,8">
+                                                <TextBlock Text="Phone" Foreground="{StaticResource MutedTextBrush}"/>
+                                                <TextBlock x:Name="SelectedTechPhoneText" Text="-" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,12,8">
+                                                <TextBlock Text="Current Status" Foreground="{StaticResource MutedTextBrush}"/>
+                                                <Border x:Name="SelectedTechStatusBadge" Background="#22C55E" CornerRadius="10" Padding="8,4" HorizontalAlignment="Left" Margin="0,3,0,0">
+                                                    <TextBlock x:Name="SelectedTechStatusText" Text="Available" Foreground="White" FontWeight="SemiBold" FontSize="12"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </UniformGrid>
+
+                                        <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
+                                            <ComboBox x:Name="QuickTechStatusBox" Width="240" Height="38"/>
+                                            <Button Content="Update Status" Width="170" Height="38" Margin="10,0,0,0" Style="{StaticResource PrimaryButton}" Click="QuickUpdateTechnicianStatus_Click"/>
+                                        </StackPanel>
+                                        <TextBlock x:Name="QuickStatusMessage" Foreground="#22C55E" FontSize="12" Margin="0,8,0,0" TextWrapping="Wrap"/>
+
+                                        <TextBlock Text="Use Edit in the table only for name, email, phone, department or deleting a technician." Foreground="{StaticResource MutedTextBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,10,0,0"/>
+                                    </StackPanel>
+
+                                </Grid>
+                            </Border>
+
+                        </DockPanel>
+                    </Border>
+                </Grid>
+
+
+                <Grid x:Name="UsersPanel" Grid.Row="1" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="310"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left side: create a system account. Users are people who can log in. -->
+                    <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+                        <DockPanel LastChildFill="True">
+                            <Button DockPanel.Dock="Bottom" Content="Add User Account" Style="{StaticResource PrimaryButton}" Height="42" Margin="0,10,0,0" Click="AddSystemUser_Click"/>
+                            <TextBlock DockPanel.Dock="Bottom" x:Name="UserAccountMessage" Foreground="#EF4444" Margin="0,8,0,0" TextWrapping="Wrap"/>
+
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel>
+                                    <TextBlock Text="Add System User" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                                    <TextBlock Text="Users are login accounts. Technicians are IT staff assigned to tickets." Foreground="{StaticResource MutedTextBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,12"/>
+
+                                    <TextBlock Text="Full Name" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <TextBox x:Name="SystemUserFullNameBox" Margin="0,4,0,8"/>
+
+                                    <TextBlock Text="Username" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <TextBox x:Name="SystemUserUsernameBox" Margin="0,4,0,8"/>
+
+                                    <TextBlock Text="Email Address" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <TextBox x:Name="SystemUserEmailBox" Margin="0,4,0,8"/>
+
+                                    <TextBlock Text="Role" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <ComboBox x:Name="SystemUserRoleBox" Margin="0,4,0,8">
+                                        <ComboBoxItem Content="Admin"/>
+                                        <ComboBoxItem Content="Manager"/>
+                                        <ComboBoxItem Content="Employee"/>
+                                        <ComboBoxItem Content="Technician"/>
+                                    </ComboBox>
+
+                                    <TextBlock Text="Temporary Password" Foreground="{StaticResource MutedTextBrush}"/>
+                                    <PasswordBox x:Name="SystemUserPasswordBox" Margin="0,4,0,8"/>
+
+                                    <TextBlock Text="Tip: If Role is Technician, the person will also appear on the Technicians page." Foreground="#86EFAC" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Right side: manage accounts separately from technician workload. -->
+                    <Border Grid.Column="1" Style="{StaticResource Card}">
+                        <DockPanel LastChildFill="True">
+                            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                                <TextBlock Text="User Account Management" FontSize="22" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="UsersSummaryText" Text="Users: 0 | Admins: 0 | Managers: 0 | Technicians: 0 | Employees: 0" Foreground="{StaticResource MutedTextBrush}" FontSize="13" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <DataGrid x:Name="UsersGrid" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HorizontalScrollBarVisibility="Disabled" CanUserResizeColumns="False" MinHeight="420">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="1.7*" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="1.2*" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="1*" ElementStyle="{StaticResource TrimText}"/>
+                                    <DataGridTextColumn Header="Status" Binding="{Binding AccountStatus}" Width="95"/>
+                                    <DataGridTemplateColumn Header="Actions" Width="185">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Content="Reset" Style="{StaticResource SmallGridButton}" Click="ResetSystemUserPassword_Click"/>
+                                                    <Button Content="Disable" Style="{StaticResource SmallGridButton}" Background="#8B1E1E" Click="DisableSystemUser_Click"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+
+                <Grid x:Name="AnalyticsPanel" Grid.Row="1" Visibility="Collapsed">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel>
+                            <TextBlock Text="Analytics" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <TextBlock Text="Live visual insight into ticket volume, priorities, departments and technician workload." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,14"/>
+
+                            <UniformGrid Columns="4" Margin="0,0,0,14">
+                                <Border Style="{StaticResource Card}" Margin="0,0,8,0" MinHeight="96"><StackPanel><TextBlock Text="Total Tickets" Foreground="{StaticResource MutedTextBrush}"/><TextBlock x:Name="AnalyticsTotalTicketsText" Text="0" FontSize="28" FontWeight="Bold" Margin="0,8,0,0"/></StackPanel></Border>
+                                <Border Style="{StaticResource Card}" Margin="0,0,8,0" MinHeight="96"><StackPanel><TextBlock Text="Resolved" Foreground="{StaticResource MutedTextBrush}"/><TextBlock x:Name="AnalyticsResolvedText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#22C55E" Margin="0,8,0,0"/></StackPanel></Border>
+                                <Border Style="{StaticResource Card}" Margin="0,0,8,0" MinHeight="96"><StackPanel><TextBlock Text="Critical" Foreground="{StaticResource MutedTextBrush}"/><TextBlock x:Name="AnalyticsCriticalText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#EF4444" Margin="0,8,0,0"/></StackPanel></Border>
+                                <Border Style="{StaticResource Card}" MinHeight="96"><StackPanel><TextBlock Text="SLA Breached" Foreground="{StaticResource MutedTextBrush}"/><TextBlock x:Name="AnalyticsBreachedText" Text="0" FontSize="28" FontWeight="Bold" Foreground="#F59E0B" Margin="0,8,0,0"/></StackPanel></Border>
+                            </UniformGrid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Style="{StaticResource Card}" MinHeight="260">
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Top" Text="Tickets by Priority" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                                        <DataGrid x:Name="AnalyticsPriorityGrid" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HorizontalScrollBarVisibility="Disabled">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Priority" Binding="{Binding Label}" Width="*"/>
+                                                <DataGridTextColumn Header="Count" Binding="{Binding Count}" Width="65"/>
+                                                <DataGridTextColumn Header="Visual" Binding="{Binding Bar}" Width="160"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </DockPanel>
+                                </Border>
+                                <Border Grid.Column="2" Style="{StaticResource Card}" MinHeight="260">
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Top" Text="Tickets by Department" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                                        <DataGrid x:Name="AnalyticsDepartmentGrid" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HorizontalScrollBarVisibility="Disabled">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Department" Binding="{Binding Label}" Width="*"/>
+                                                <DataGridTextColumn Header="Count" Binding="{Binding Count}" Width="65"/>
+                                                <DataGridTextColumn Header="Visual" Binding="{Binding Bar}" Width="160"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </DockPanel>
+                                </Border>
+                            </Grid>
+
+                            <Border Style="{StaticResource Card}" MinHeight="260" Margin="0,14,0,0">
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Top" Text="Technician Workload" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                                    <DataGrid x:Name="AnalyticsTechnicianGrid" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HorizontalScrollBarVisibility="Disabled">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Technician" Binding="{Binding Label}" Width="*"/>
+                                            <DataGridTextColumn Header="Active Tickets" Binding="{Binding Count}" Width="120"/>
+                                            <DataGridTextColumn Header="Workload" Binding="{Binding Bar}" Width="220"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <Grid x:Name="ReportsPanel" Grid.Row="1" Visibility="Collapsed">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel>
+                            <TextBlock Text="Reports" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <TextBlock Text="Generate management-ready service desk reports and export them for Excel or documentation." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,14"/>
+
+                            <Border Style="{StaticResource Card}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="Generate Report" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                                    <UniformGrid Columns="6">
+                                        <Button Content="Daily" Style="{StaticResource SecondaryButton}" Margin="0,0,8,0" Height="42" Click="DailyReport_Click"/>
+                                        <Button Content="Weekly" Style="{StaticResource SecondaryButton}" Margin="0,0,8,0" Height="42" Click="WeeklyReport_Click"/>
+                                        <Button Content="Monthly" Style="{StaticResource SecondaryButton}" Margin="0,0,8,0" Height="42" Click="MonthlyReport_Click"/>
+                                        <Button Content="Technician" Style="{StaticResource SecondaryButton}" Margin="0,0,8,0" Height="42" Click="TechnicianReport_Click"/>
+                                        <Button Content="Department" Style="{StaticResource SecondaryButton}" Margin="0,0,8,0" Height="42" Click="DepartmentReport_Click"/>
+                                        <Button Content="SLA" Style="{StaticResource SecondaryButton}" Height="42" Click="SlaReport_Click"/>
+                                    </UniformGrid>
+                                    <Grid Margin="0,14,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition Width="180"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock x:Name="ReportMessageText" VerticalAlignment="Center" Foreground="{StaticResource MutedTextBrush}" Text="Choose a report type to preview it." TextWrapping="Wrap"/>
+                                        <Button Grid.Column="2" Content="Export CSV" Style="{StaticResource PrimaryButton}" Height="42" Click="ExportReportCsv_Click"/>
+                                        <Button Grid.Column="4" Content="Save Text Report" Style="{StaticResource SecondaryButton}" Height="42" Click="SaveReportText_Click"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.2*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Style="{StaticResource Card}" MinHeight="360">
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Top" x:Name="ReportPreviewTitleText" Text="Report Preview" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                                        <TextBox x:Name="ReportPreviewBox" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#303030" Foreground="White" BorderBrush="{StaticResource BorderBrushSoft}"/>
+                                    </DockPanel>
+                                </Border>
+                                <Border Grid.Column="2" Style="{StaticResource Card}" MinHeight="360">
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Top" Text="Report Data" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                                        <DataGrid x:Name="ReportDataGrid" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HorizontalScrollBarVisibility="Disabled">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Label" Binding="{Binding Label}" Width="*"/>
+                                                <DataGridTextColumn Header="Count" Binding="{Binding Count}" Width="80"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </DockPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <Grid x:Name="SettingsPanel" Grid.Row="1" Visibility="Collapsed">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel>
+                            <TextBlock Text="Company Settings" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <TextBlock Text="Configure the company profile, departments and ticket categories. These values are used across the whole system." Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,14"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.05*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Company profile card -->
+                                <Border Grid.Column="0" Style="{StaticResource Card}" MinHeight="410">
+                                    <StackPanel>
+                                        <TextBlock Text="Company Profile" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                                        <TextBlock Text="Company Name" Foreground="{StaticResource MutedTextBrush}"/>
+                                        <TextBox x:Name="SettingsCompanyNameBox" Margin="0,6,0,10"/>
+
+                                        <TextBlock Text="Company Email" Foreground="{StaticResource MutedTextBrush}"/>
+                                        <TextBox x:Name="SettingsCompanyEmailBox" Margin="0,6,0,10"/>
+
+                                        <TextBlock Text="Phone" Foreground="{StaticResource MutedTextBrush}"/>
+                                        <TextBox x:Name="SettingsCompanyPhoneBox" Margin="0,6,0,10"/>
+
+                                        <TextBlock Text="Address" Foreground="{StaticResource MutedTextBrush}"/>
+                                        <TextBox x:Name="SettingsCompanyAddressBox" Margin="0,6,0,14"/>
+
+                                        <TextBlock x:Name="SettingsMessage" Foreground="#22C55E" Margin="0,0,0,10" TextWrapping="Wrap"/>
+                                        <Button Content="Save Company Details" Style="{StaticResource PrimaryButton}" Height="42" Click="SaveCompanySettings_Click"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Departments card -->
+                                <Border Grid.Column="2" Style="{StaticResource Card}" MinHeight="410">
+                                    <DockPanel LastChildFill="True">
+                                        <StackPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+                                            <TextBlock Text="New Department" Foreground="{StaticResource MutedTextBrush}"/>
+                                            <TextBox x:Name="NewDepartmentBox" Margin="0,6,0,8"/>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="8"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Button Grid.Column="0" Content="Add" Style="{StaticResource PrimaryButton}" Height="40" Click="AddDepartment_Click"/>
+                                                <Button Grid.Column="2" Content="Remove" Style="{StaticResource SecondaryButton}" Height="40" Click="DeleteDepartment_Click"/>
+                                            </Grid>
+                                            <TextBlock x:Name="DepartmentSettingsMessage" Foreground="#22C55E" Margin="0,10,0,0" FontSize="12" TextWrapping="Wrap"/>
+                                        </StackPanel>
+
+                                        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                                            <TextBlock Text="Departments" FontSize="18" FontWeight="SemiBold"/>
+                                            <TextBlock Text="Add departments like Legal, Procurement, Sales, Warehouse or Marketing." Foreground="{StaticResource MutedTextBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                        </StackPanel>
+
+                                        <ListBox x:Name="DepartmentsListBox" Background="#303030" Foreground="White" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="1" MinHeight="190"/>
+                                    </DockPanel>
+                                </Border>
+
+                                <!-- Categories card -->
+                                <Border Grid.Column="4" Style="{StaticResource Card}" MinHeight="410">
+                                    <DockPanel LastChildFill="True">
+                                        <StackPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+                                            <TextBlock Text="New Category" Foreground="{StaticResource MutedTextBrush}"/>
+                                            <TextBox x:Name="NewCategoryBox" Margin="0,6,0,8"/>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="8"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Button Grid.Column="0" Content="Add" Style="{StaticResource PrimaryButton}" Height="40" Click="AddCategory_Click"/>
+                                                <Button Grid.Column="2" Content="Remove" Style="{StaticResource SecondaryButton}" Height="40" Click="DeleteCategory_Click"/>
+                                            </Grid>
+                                            <TextBlock x:Name="CategorySettingsMessage" Foreground="#22C55E" Margin="0,10,0,0" FontSize="12" TextWrapping="Wrap"/>
+                                        </StackPanel>
+
+                                        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                                            <TextBlock Text="Ticket Categories" FontSize="18" FontWeight="SemiBold"/>
+                                            <TextBlock Text="Create categories such as VPN, CCTV, Access Control, Server, Payroll or Internet." Foreground="{StaticResource MutedTextBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                        </StackPanel>
+
+                                        <ListBox x:Name="CategoriesListBox" Background="#303030" Foreground="White" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="1" MinHeight="190"/>
+                                    </DockPanel>
+                                </Border>
+                            </Grid>
+
+                            <Grid Margin="0,14,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Clean full-width SLA Management card. Everything on this page is useful and editable. -->
+                                <Border Grid.Column="0" Style="{StaticResource Card}" MinHeight="430">
+                                    <DockPanel LastChildFill="True">
+                                        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,18">
+                                            <TextBlock Text="SLA Management" FontSize="22" FontWeight="SemiBold"/>
+                                            <TextBlock Text="Configure response and resolution targets for each ticket priority." Foreground="{StaticResource MutedTextBrush}" FontSize="13" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                        </StackPanel>
+
+                                        <StackPanel DockPanel.Dock="Bottom" Margin="0,18,0,0">
+                                            <Button Content="Save SLA Changes" Style="{StaticResource PrimaryButton}" Height="46" HorizontalAlignment="Right" MinWidth="220" Click="SaveSlaRules_Click"/>
+                                            <TextBlock x:Name="SlaSettingsMessage" Foreground="#86EFAC" FontSize="12" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                                        </StackPanel>
+
+                                        <DataGrid x:Name="SlaRulesGrid"
+                                                  AutoGenerateColumns="False"
+                                                  CanUserAddRows="False"
+                                                  CanUserDeleteRows="False"
+                                                  IsReadOnly="False"
+                                                  HeadersVisibility="Column"
+                                                  Background="#303030"
+                                                  Foreground="White"
+                                                  BorderBrush="{StaticResource BorderBrushSoft}"
+                                                  BorderThickness="1"
+                                                  MinHeight="280"
+                                                  RowHeight="54"
+                                                  SelectionUnit="CellOrRowHeader"
+                                                  KeyboardNavigation.TabNavigation="Continue">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Priority" Binding="{Binding Priority}" IsReadOnly="True" Width="*"/>
+
+                                                <DataGridTemplateColumn Header="Response Time (Hours)" Width="*">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBox Text="{Binding ResponseHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                     Height="38"
+                                                                     VerticalContentAlignment="Center"
+                                                                     HorizontalContentAlignment="Center"
+                                                                     ToolTip="Enter response time in hours"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                                <DataGridTemplateColumn Header="Resolution Time (Hours)" Width="*">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBox Text="{Binding ResolutionHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                     Height="38"
+                                                                     VerticalContentAlignment="Center"
+                                                                     HorizontalContentAlignment="Center"
+                                                                     ToolTip="Enter resolution time in hours"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </DockPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+
+                <Grid Grid.Row="2" Margin="0,18,0,0">
+                    <TextBlock Text="© 2026 ServiceDeskPro. Professional IT support ticketing system." Foreground="{StaticResource MutedTextBrush}"/>
+                    <TextBlock Text="Version 1.0.0  •  Connected" Foreground="{StaticResource MutedTextBrush}" HorizontalAlignment="Right"/>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>
