@@ -1,4 +1,6 @@
 ## ServiceDesk Pro Professional IT Service Desk & Ticket Management System
+## Developer
+## NENGUDA BONO
 
 ## Overview
 
@@ -475,10 +477,13 @@ Apply software engineering principles
 
 ## ServiceDesk Pro mirrors the type of software used in real IT departments and help desk environments, making it an excellent portfolio project for software development, desktop development, IT support systems, and enterprise application roles.
 
-## Developer
+## GitHub Release Tags
 
-## NENGUDA BONO
-
-Software Developmer
-
-Passionate about building real-world software solutions that solve business problems through clean design, structured architecture, and practical functionality.
+## v1.0.0 - Initial ServiceDesk Pro Release
+## v1.1.0 - Technician Management System
+## v1.2.0 - Dynamic Departments & Categories
+## v1.3.0 - SLA Management
+## v1.4.0 - User & Access Management
+## v1.5.0 - Reports and Analytics
+## v1.6.0 - Activity Logging
+## v2.0.0 - Enterprise ServiceDesk Pro
